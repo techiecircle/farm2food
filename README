@@ -1,0 +1,175 @@
+# How to use venv and create a seperate independent environment for your project. This wil be done in a command window.
+# Step 1    : Create a folder called fintech and cd to fintech.
+# Step 2    : run the following command.
+    command : python -m venv fintech
+# Step 3: activate the venv
+    command : fintech\Scripts\activate.bat
+# Step 4: Test venv
+    command : where python
+# Step 5 : Customize your venv
+    command : pip list
+    command : python.exe -m pip install --upgrade pip
+    command : pip install requests
+    Output:
+			Collecting requests
+			  Using cached requests-2.25.1-py2.py3-none-any.whl (61 kB)
+			Collecting idna<3,>=2.5
+			  Using cached idna-2.10-py2.py3-none-any.whl (58 kB)
+			Collecting chardet<5,>=3.0.2
+			  Using cached chardet-4.0.0-py2.py3-none-any.whl (178 kB)
+			Collecting urllib3<1.27,>=1.21.1
+			  Using cached urllib3-1.26.5-py2.py3-none-any.whl (138 kB)
+			Collecting certifi>=2017.4.17
+			  Using cached certifi-2021.5.30-py2.py3-none-any.whl (145 kB)
+			Installing collected packages: urllib3, idna, chardet, certifi, requests
+			Successfully installed certifi-2021.5.30 chardet-4.0.0 idna-2.10 requests-2.25.1 urllib3-1.26.5  
+	command : pip install pytz
+	command : pip list
+# Step 6 : To create requirments.txt file so that others can get the above files and dependencies.
+	command : pip freeze
+# Step 7 : Copy or redirect the output to "requirements.txt"        
+    command : pip freeze > requirements.txt
+# Step 8 : To Deactivate the environment.
+    command : deactivate
+# Step 9 : To Permanently delete all the folders and environment in local machine.
+    command : rmdir
+
+# Step A  To Load System Packages into your virtual environment.
+    command : python -m venv fintech --system-site-packages
+# Step A-1  : To activate the Virtual Environment
+    command : fintech\scripts\activate.bat
+# Step A-2  : To install additonal local packages for example. (eg. SQLAlchemy) in local virtual environment.
+    command : pip install SQLAlchemy
+# Step A-3  : To verify the installation all packages
+    command : pip list
+# Step A-4  : To verify the installation only in the local environment
+    command : pip list --local
+# Step A-5  : To Create local requirements.txt file
+    command : pip freeze --local
+
+
+#####*********************Installing packages from requirements.txt file.***************************##################
+
+#Step 1     :  To install from requirements.txt to install packages and dependencies
+   command  :  pip install -r requirements.txt
+#Step 2     : To verify the environment
+   command  :  pip list
+####***********************************Deploy code to HEROKU **********************************#######################
+#Step 1     : Create and sign into HEROKU
+#Step 2     : Install git from github
+#Step 3     : Download and install HEROKU CLI 
+#Step 4     : Verify the HEROKU cli installation.
+   Command  : heroku
+#Step 5     : login to HEROKU
+   command  : heroku login
+#Step 6     : Install one more package in your local Environment
+   command  : pip install gunicorn
+#Step 7     : Create requirements.txt file as explained in Step A-1 to .... above.
+#Step 8     : Start working with GIT repositiory. Download and install GIT and initialize git repository.
+   command  : git init
+#Step 9     : Tell git to what to use and ignore files.  use a .gitignore file from git website
+#Step 10    : commit changes to git
+   command  : git add -A
+   command  : git status
+   command  : git commit -m "Initial commit"
+#Step 11    : Create HEROKU app
+   command  : heroku create <app-name>
+#Step 12    : HEROKU will create the APP and also a domain and open the app using the following.
+   command  : heroku open
+#Step 13    : Push to code to HORUKU
+   command  : git push heroku master
+#Step 14    : To view logs on HEROKU if something fails.
+   command  : heroku logs --tail
+#Step 15    : 
+
+############### Trouble shooting the deployment ###################
+#Step 1     : create Procfile  
+  add line  : web: gunicorn fintech.wsgi
+  save file : save and close the procfile
+  check git : git status
+            : git add -A
+            : git commit -m "Added Procfile"
+#Step 2     : Push file to heroku      
+   command  : git push heroku master
+   command  : heroku open
+#Step 3     : Prepare the production environment in HEROKU(i.e, fix the errors and warnings)
+    Debug   : Turn off the Debug in settings.py file
+    host    : fill in the ALLOWED_HOSTS info in settings.py file
+    env     : set environment variables
+    key     : move the secret key to environment variable.
+            : use Python3 to create secret key
+    command : python
+            : >>> import secrets
+            : >>> secrets.token_hex(24)
+            : >>> exit()
+#Step 4     : Set environment variables 
+            : SECRET_KEY = " "
+            : DEBUG_VALUE="TRUE"    
+            : AWS_ACCESS_KEY_ID = ""
+            : AWS_SECRET_ACCESS_KEY = "" 
+            : AWS_STORAGE_BUCKET_NAME = ""
+#Step 5     : set environment variables in HEROKU         
+   command  : heroku config:set SECRET_KEY=""
+   command  : heroku config:set DEBUG_VALUE="True"
+   command  : heroku config:set AWS_ACCESS_KEY_ID = ""
+   command  : heroku config:set AWS_SECRET_ACCESS_KEY = "" 
+   command  : heroku config:set AWS_STORAGE_BUCKET_NAME= ""
+   command  : heroku config:set EMAIL_USER= ""
+   command  : heroku config:set EMAIL_PASS= ""
+
+#Step 6     : modify the settings.py file to grab the values from the environment.
+            : SECRET_KEY = os.environ.get('SECRET_KEY')
+push to git : git add -A
+commit git  : git commit -m "Updated Settings"
+ To heroku  : git push heroku master
+            : heroku open
+
+#Step 7     : Configure postgres database on Local and HEROKU
+            : heroku addons
+            : heroku addons:create heroku-postgresql:hobby-dev
+            : heroku pg
+#Step 8     : Create Tables, Super User,add creditial, and HEROKU helper function.
+   command  : pip install django-heroku
+#Step 9     : automatically configure database URL, connect static assets to UGUNICORN using white noise and logging too.
+            : open settings.py file
+            : import django_heroku
+            : django_heroku.settings(locals())
+#Step 10    : Update the requirements.txt
+   command  : pip freeze > requirements.txt
+   command  : git status
+   command  : git add -A
+   command  : git commit -m "Added django-heroku"
+   command  : git push heroku master
+   command  : heroku open
+   command  : heroku run python manage.py migrate
+   command  : heroku run bash
+   command  : ls
+   command  : python manage.py createsuperuser
+   command  : exit
+   command  : heroku open
+
+#Step 11    : Check Django Deployment Check List
+    modify  : in settings.py file. Modify DEBUG = (os.environ.get('DEBUG_VALUE') == 'True')
+    command : git add -A
+    command : git commit -m "Set Debug Value"
+    command : git push heroku master
+    command : heroku releases
+    command : heroku rollback <version no>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
